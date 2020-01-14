@@ -1,0 +1,58 @@
+version: '3.7'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.2.0
+    container_name: elasticsearch1
+    environment:
+      - bootstrap.memory_lock=true
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
+      - http.cors.enabled=true
+      - http.cors.allow-origin=*
+      - network.host=_eth0_
+    volumes:
+      - type: volume
+        source: logs
+        target: /var/log
+      - type: volume
+        source: esdata1
+        target: /usr/share/elasticsearch/data
+    networks:
+      - elastic
+    ports:
+      - 9200:9200
+      - 9300:9300
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.2.0
+    container_name: kibana
+    environment:
+      SERVER_NAME: localhost
+      ELASTICSEARCH_URL: http://elasticsearch1:9200/
+    ports:
+      - 5601:5601
+    volumes:
+      - type: volume
+        source: logs
+        target: /var/log
+    networks:
+      - elastic
+  web:
+    container_name: lawtech_search_engine
+    build: .
+    # Run below command If this is your first time accessing
+    #command: python service/search_service/vbpl_extractor.py
+    command: python app.py
+    volumes:
+      - .:/code
+    ports:
+      - "1910:1910"
+    networks:
+      - elastic
+    depends_on:
+      - elasticsearch
+volumes:
+  esdata1:
+  logs:
+
+networks:
+  elastic:
