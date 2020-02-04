@@ -9,6 +9,7 @@ from helper.reader_helper import get_content, is_exist_file
 from es_service.es_connection import elasticsearch_connection, insert_doc
 
 import pandas as pd
+import time
 
 
 def index_record(raw_path, law_document):
@@ -51,7 +52,7 @@ def index_record(raw_path, law_document):
             law_document['Lược đồ'] = ast.literal_eval(law_document['Lược đồ'])
         law_document['full_text'] = full_text
         law_document['full_text_eng'] = full_text_eng
-        # print(row_dict)
+        #print(row_dict)
         # print(row['url'])
         # print(row['Tên VB'])
         # print(row['Toàn văn'])
@@ -63,12 +64,11 @@ def index_record(raw_path, law_document):
         # break
         index_document_law_to_es(law_document)
     except Exception as e:
-        # print(e)
-        print('error: ', law_document)
-
+        print(123)
+        # print('error: ', law_document)
 
 def load_vbpl_csv(raw_path):
-    df = pd.read_csv(raw_path + '/data.csv')
+    df = pd.read_csv(raw_path + '/data.csv', encoding='utf-8')
     executor = ThreadPoolExecutor(max_workers=50)
 
     for idx, row in df.iterrows():
@@ -90,5 +90,5 @@ def execute():
     raw_path = folder_output_path + '/vbpl/raw'
     load_vbpl_csv(raw_path)
 
-
+time.sleep(30)
 execute()

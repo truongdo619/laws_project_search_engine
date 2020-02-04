@@ -1,3 +1,8 @@
+import sys
+sys.path.append('./')
+from constants.law_constant import DEPARTMENT_TYPES, TOPIC_TYPES
+from service.common.common import get_by_attribute_from_array_dict
+
 
 def get_source_default():
     source = ['url', 'Tên VB', 'Thuộc tính']
@@ -55,3 +60,38 @@ def get_condition_by_topic_type(topic_name):
         }
     }
 
+
+def get_condition_should_by_departments(department_ids):
+    department_types_condition_should = []
+
+    for department_id in department_ids:
+        department_name = get_by_attribute_from_array_dict(DEPARTMENT_TYPES, 'id', department_id).get(
+            'name')
+        department_types_condition_should.append(get_condition_by_department_type(department_name))
+
+    department_types_condition = {
+        "bool": {
+            "should": [
+                department_types_condition_should
+            ]
+        }
+    }
+    return department_types_condition
+
+
+def get_condition_should_by_topics(topic_ids):
+    topic_types_condition_should = []
+    for topic_id in topic_ids:
+        topic_name = get_by_attribute_from_array_dict(TOPIC_TYPES, 'id', topic_id).get(
+            'name')
+
+        topic_types_condition_should.append(get_condition_by_topic_type(topic_name))
+
+    topic_types_condition = {
+        "bool": {
+            "should": [
+                topic_types_condition_should
+            ]
+        }
+    }
+    return topic_types_condition

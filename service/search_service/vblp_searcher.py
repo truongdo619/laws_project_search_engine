@@ -1,7 +1,7 @@
 import sys
 sys.path.append('./')
 from elasticsearch import NotFoundError
-
+from helper.transform_format import dictionary_to_array
 from config.config_es import INDEX_LAW, TYPE_DOCUMENT
 from es_service.es_connection import elasticsearch_connection
 from service.search_service.vblp_query_helper import get_source_default, get_sort_by_date_issued, get_sort_by_score, \
@@ -61,8 +61,9 @@ def search_content(es, content, match_phrase=False, limit=5, _source=None, edito
         }
 
     filter_builder = []
-    if editor_setting.get('scopeId') == 1:
-        filter_builder.append(get_filter_scope(scope='Toàn quốc'))
+    if 'scopeId' in editor_setting:
+        if editor_setting.get('scopeId') == 1:
+            filter_builder.append(get_filter_scope(scope='Toàn quốc'))
     if len(filter_builder) > 0:
         query.get('query').get('bool').update({'filter': filter_builder})
 
@@ -76,83 +77,113 @@ def search_content(es, content, match_phrase=False, limit=5, _source=None, edito
     return res['hits']
 
 
-def search_title(es, title, limit=5, match_phrase=False, _source=None, minimum_should_match="80", filter_builder=None):
+def search_title(es, title, limit=5, match_phrase=False, _source=None, editor_setting=None, minimum_should_match="80",
+                 filter_builder=None, document_types_condition=None, department_types_condition=None,
+                 topic_types_condition=None):
     keyword = title
     query = {}
 
     if _source is None:
         _source = get_source_default()
 
-    if match_phrase:
-        query = {
-            "query": {
-                "bool": {
-                    "should": [
+    # if match_phrase:
+    #     query = {
+    #         "query": {
+    #             "bool": {
+    #                 "should": [
+    #
+    #                 ],
+    #                 "must": [
+    #                     {
+    #                         "bool": {
+    #                             "should": [
+    #                                 {
+    #                                     "match_phrase": {
+    #                                         "Tên VB": keyword
+    #                                     }
+    #                                 },
+    #                                 {
+    #                                     "match_phrase": {
+    #                                         "Thuộc tính.Thông tin": keyword
+    #                                     }
+    #                                 }
+    #                             ]
+    #                         }
+    #                     }
+    #                 ],
+    #                 "must_not": []
+    #             }
+    #         },
+    #         "sort": [get_sort_by_date_issued(), get_sort_by_score()],
+    #         "_source": _source,
+    #         "size": limit
+    #     }
+    # else:
+    #     query = {
+    #         "query": {
+    #             "bool": {
+    #                 "should": [
+    #
+    #                 ],
+    #                 "must": [
+    #                     {
+    #                         "bool": {
+    #                             "should": [
+    #                                 {
+    #                                     "match": {
+    #                                         "Tên VB": {
+    #                                             "query": keyword,
+    #                                             "minimum_should_match": minimum_should_match + '%'
+    #                                         }
+    #                                     }
+    #                                 },
+    #                                 {
+    #                                     "match": {
+    #                                         "Thuộc tính.Thông tin": {
+    #                                             "query": keyword,
+    #                                             "minimum_should_match": minimum_should_match + '%'
+    #                                         }
+    #                                     }
+    #                                 }
+    #                             ]
+    #                         }
+    #                     }
+    #                 ],
+    #                 "must_not": []
+    #             }
+    #         },
+    #         "sort": [get_sort_by_date_issued(), get_sort_by_score()],
+    #         "_source": _source,
+    #         "size": limit
+    #     }
 
-                    ],
-                    "must": [
-                        {
-                            "bool": {
-                                "should": [
-                                    {
-                                        "match_phrase": {
-                                            "Tên VB": keyword
-                                        }
-                                    },
-                                    {
-                                        "match_phrase": {
-                                            "Thuộc tính.Thông tin": keyword
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    ],
-                    "must_not": []
-                }
-            },
-            "sort": [get_sort_by_date_issued(), get_sort_by_score()],
-            "_source": _source,
-            "size": limit
+    query = {
+        "query": {
+            "match_phrase_prefix": {
+                "Tên VB": title
+            }
         }
-    else:
-        query = {
-            "query": {
-                "bool": {
-                    "should": [
+        ,
+        "sort": get_sort_by_score(),
+        "_source": _source,
+        "size": limit
+    }
 
-                    ],
-                    "must": [
-                        {
-                            "bool": {
-                                "should": [
-                                    {
-                                        "match": {
-                                            "Tên VB": {
-                                                "query": keyword,
-                                                "minimum_should_match": minimum_should_match + '%'
-                                            }
-                                        }
-                                    },
-                                    {
-                                        "match": {
-                                            "Thuộc tính.Thông tin": {
-                                                "query": keyword,
-                                                "minimum_should_match": minimum_should_match + '%'
-                                            }
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    ],
-                    "must_not": []
-                }
-            },
-            "sort": [get_sort_by_date_issued(), get_sort_by_score()],
-            "_source": _source,
-            "size": limit
-        }
+    if document_types_condition is not None:
+        must_query = dictionary_to_array(query.get('query').get('bool')['must'])
+        new_must_query = must_query + [document_types_condition]
+        query.get('query').get('bool').update({'must': new_must_query})
+
+    if department_types_condition is not None:
+        must_query = dictionary_to_array(query.get('query').get('bool')['should'])
+        new_must_query = must_query + [department_types_condition]
+        query.get('query').get('bool').update({'should': new_must_query})
+
+    if topic_types_condition is not None:
+        must_query = dictionary_to_array(query.get('query').get('bool')['should'])
+        new_must_query = must_query + [department_types_condition]
+        query.get('query').get('bool').update({'should': new_must_query})
+
     if filter_builder is not None and len(filter_builder) > 0:
         query.get('query').get('bool').update({'filter': filter_builder})
     print(f'query: {query}')

@@ -20,8 +20,8 @@ services:
     networks:
       - elastic
     ports:
-      - 9200:9200
-      - 9300:9300
+      - 9202:9200
+      - 9302:9300
   kibana:
     image: docker.elastic.co/kibana/kibana:7.2.0
     container_name: kibana
@@ -29,7 +29,7 @@ services:
       SERVER_NAME: localhost
       ELASTICSEARCH_URL: http://elasticsearch1:9200/
     ports:
-      - 5601:5601
+      - 5602:5601
     volumes:
       - type: volume
         source: logs
@@ -40,12 +40,13 @@ services:
     container_name: lawtech_search_engine
     build: .
     # Run below command If this is your first time accessing
-    #command: python service/search_service/vbpl_extractor.py
+    #command: python service/vbpl_extractor.py
     command: python app.py
     volumes:
       - .:/code
+      - /run/media/kodiak/New Volume/Documents/data/20181202:/mydata
     ports:
-      - "1910:1910"
+      - "1911:1910"
     networks:
       - elastic
     depends_on:
