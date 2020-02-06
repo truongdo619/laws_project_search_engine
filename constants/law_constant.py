@@ -76,3 +76,54 @@ SCOPE_TYPES = [
     {'id': 1, 'name': 'Toàn quốc'},
     {'id': 2, 'name': 'Địa phương'},
 ]
+
+
+ES_MAPPING = {
+    "id": "",
+    "Tên VB" : "",
+    "full_text" :"",
+    "full_text_eng" : "",
+    "url": "",
+    "Lịch sử" : "",
+    "Lược đồ" : {},
+    "Thuộc tính" : {}
+}
+
+PROPERTIES_TERMS = {
+    1 : "Cơ quan ban hành",
+    2 : "Chức danh người ký",
+    3 : "Người ký",
+    4 : "Loại văn bản",
+    5 : "Lí do hết hiệu lực",
+    6 : "Lý do hết hiệu lực 1 phần",
+    7 : "Lĩnh vực",
+    8 : "Nguồn thu thập",
+    9 : "Ngành",
+    10 : "Ngày ban hành",
+    11 : "Ngày có hiệu lực",
+    12 : "Ngày hết hiệu lực",
+    13 : "Ngày đăng công báo",
+    14 : "Phạm vi",
+    15 : "Số ký hiệu",
+    16 : "Thông tin",
+    17 : "Thông tin áp dụng"
+}
+
+RELATION_TERMS = {
+    1 : "Văn bản HD, QĐ chi tiết",
+    2 : "Văn bản bị hết hiệu lực 1 phần",
+    3 : "Văn bản bị đình chỉ",
+    4 : "Văn bản bổ sung",
+    5 : "Văn bản căn cứ",
+    6 : "Văn bản dẫn chiếu",
+    7 : "Văn bản hiện thời",
+    8 : "Văn bản hết hiệu lực",
+    9 : "Văn bản liên quan khác",
+    10 : "Văn bản quy định hết hiệu lực 1 phần",
+    11 : "Văn bản sửa đổi",
+    12 : "Văn bản đình chỉ",
+    13 : "Văn bản đình chỉ 1 phần",
+    14 : "Văn bản được HD, QĐ chi tiết",
+    15 : "Văn bản được bổ sung",
+    16 : "Văn bản được sửa đổi"
+}
