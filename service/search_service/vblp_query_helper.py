@@ -51,6 +51,7 @@ def get_condition_by_department_type(department_name):
     }
 
 
+
 def get_condition_by_topic_type(topic_name):
     return {
         "match_phrase": {
@@ -95,3 +96,12 @@ def get_condition_should_by_topics(topic_ids):
         }
     }
     return topic_types_condition
+
+def get_aggregations_of_fields():
+    return {
+                "count_is": {
+                  "terms" : {
+                    "field" : "Thuộc tính.Lĩnh vực.keyword"
+                  }
+                }
+        }
