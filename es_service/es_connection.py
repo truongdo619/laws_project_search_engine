@@ -5,9 +5,10 @@ from config.config_project import ES_IP, ES_USER, ES_PASS, ES_PORT
 
 from es_service.es_helper import check_status_es
 from datetime import datetime
-
+from constants.law_constant import MAPPING
 from elasticsearch import Elasticsearch, NotFoundError
 from elasticsearch import helpers
+import time
 
 elasticsearch_connection = Elasticsearch(
     ['http://' + ES_USER + ':' + ES_PASS + '@' + ES_IP + ':' + ES_PORT ],
@@ -57,6 +58,7 @@ def remove_doc(es, index, doc_type, id, verbose=True):
     if verbose:
         print(output)
     return True
+    #         'url': 'this is a url'
 
 
 def remove_all_doc_from_index(es, index, verbose=True):
@@ -71,11 +73,17 @@ def search(es, query={"query": {"match_all": {}}}):
     for hit in res['hits']['hits']:
         print("%(timestamp)s %(author)s: %(text)s" % hit["_source"])
 
+def create_index(es, index, mapping, verbose=True):
+    print (index)
+    res = es.indices.create(index=index, ignore=400, body=mapping)
+    if verbose: print(res)
+    return True
 
 def example():
     es = elasticsearch_connection
     check_status_es(es)
-    # index = "test-index"
+    index = "law_tech"
+    create_index(es, index, MAPPING)
     # doc_type = 'tweet'
     # body = {
     #     'author': 'tuantm',
@@ -108,4 +116,5 @@ def example():
     # remove_all_doc_from_index(es, index)
     # print('done')
 
-# example()
+# time.sleep(30)
+example()

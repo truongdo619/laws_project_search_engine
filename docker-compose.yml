@@ -40,9 +40,9 @@ services:
     container_name: lawtech_search_engine
     build: .
     # Run below command If this is your first time accessing
-    #command: python service/vbpl_extractor.py
+    command: python service/vbpl_extractor.py
     #command: python app.py
-    command: python es_service/es_connection.py
+    #command: python es_service/es_connection.py
     volumes:
       - .:/code
       - /run/media/kodiak/New Volume/Documents/data/20181202:/mydata

@@ -10,7 +10,7 @@ from es_service.es_connection import elasticsearch_connection, insert_doc
 
 import pandas as pd
 import time
-
+from datetime import datetime
 
 def index_record(raw_path, law_document):
     try:
@@ -41,6 +41,14 @@ def index_record(raw_path, law_document):
         # print(row_dict)
         if (law_document['Thuộc tính'] is not None and 'N/a' not in law_document['Thuộc tính']):
             law_document['Thuộc tính'] = ast.literal_eval(law_document['Thuộc tính'])
+            if ('Ngày ban hành' in law_document['Thuộc tính'] and law_document['Thuộc tính']['Ngày ban hành'] is not None and 'N/a' not in law_document['Thuộc tính']['Ngày ban hành']):
+                law_document['Thuộc tính']['Ngày ban hành'] = datetime.strptime(law_document['Thuộc tính']['Ngày ban hành'][0], "%d/%m/%Y")
+            if ('Ngày có hiệu lực' in law_document['Thuộc tính'] and law_document['Thuộc tính']['Ngày có hiệu lực'] is not None and 'N/a' not in law_document['Thuộc tính']['Ngày có hiệu lực']):
+                law_document['Thuộc tính']['Ngày có hiệu lực'] = datetime.strptime(law_document['Thuộc tính']['Ngày có hiệu lực'][0], "%d/%m/%Y")
+            if ('Ngày hết hiệu lực' in law_document['Thuộc tính'] and law_document['Thuộc tính']['Ngày hết hiệu lực'] is not None and 'N/a' not in law_document['Thuộc tính']['Ngày hết hiệu lực']):
+                law_document['Thuộc tính']['Ngày hết hiệu lực'] = datetime.strptime(law_document['Thuộc tính']['Ngày hết hiệu lực'][0], "%d/%m/%Y")
+            if ('Ngày đăng công báo' in law_document['Thuộc tính'] and law_document['Thuộc tính']['Ngày đăng công báo'] is not None and 'N/a' not in law_document['Thuộc tính']['Ngày đăng công báo']):
+                law_document['Thuộc tính']['Ngày đăng công báo'] = datetime.strptime(law_document['Thuộc tính']['Ngày đăng công báo'][0], "%d/%m/%Y")
 
         if (law_document['Lịch sử'] is not None and 'N/a' not in law_document['Lịch sử']):
             law_document['Lịch sử'] = ast.literal_eval(law_document['Lịch sử'])
@@ -64,7 +72,7 @@ def index_record(raw_path, law_document):
         # break
         index_document_law_to_es(law_document)
     except Exception as e:
-        print(123)
+        print("------------------------------------------------------------------------------")
         # print('error: ', law_document)
 
 def load_vbpl_csv(raw_path):
@@ -80,7 +88,7 @@ def load_vbpl_csv(raw_path):
 def index_document_law_to_es(law_document):
     es = elasticsearch_connection
     index = "law_tech"
-    doc_type = 'document'
+    doc_type = '_doc'
     id = law_document.get('id')
     print(id)
     insert_doc(es, index, doc_type, id, law_document, verbose=True)
