@@ -10,9 +10,14 @@ def get_source_default():
 
 
 def get_sort_by_date_issued(desc=True):  # Ngày ban hành
-    return {
-        "Thuộc tính.Ngày ban hành.keyword": {"order": "desc"}
-    }
+    if desc:
+        return {
+            "Thuộc tính.Ngày ban hành.keyword": {"order": "desc"}
+        }
+    else:
+        return {
+            "Thuộc tính.Ngày ban hành.keyword": {"order": "asc"}
+        }
 
 
 def get_sort_by_score(desc=True):
@@ -105,3 +110,11 @@ def get_aggregations_of_fields():
                   }
                 }
         }
+
+def range_issued_date( gte, lte):
+    return {
+        "Thuộc tính.Ngày ban hành": {
+            "gte": gte,
+            "lte": lte
+        }
+    }

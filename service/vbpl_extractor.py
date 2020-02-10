@@ -1,4 +1,3 @@
-
 import sys
 sys.path.append('./')
 import ast
@@ -41,14 +40,22 @@ def index_record(raw_path, law_document):
         # print(row_dict)
         if (law_document['Thuộc tính'] is not None and 'N/a' not in law_document['Thuộc tính']):
             law_document['Thuộc tính'] = ast.literal_eval(law_document['Thuộc tính'])
-            if ('Ngày ban hành' in law_document['Thuộc tính'] and law_document['Thuộc tính']['Ngày ban hành'] is not None and 'N/a' not in law_document['Thuộc tính']['Ngày ban hành']):
+            if ('Ngày ban hành' in law_document['Thuộc tính'] and law_document['Thuộc tính']['Ngày ban hành'] is not None and '...' not in law_document['Thuộc tính']['Ngày ban hành'][0]):
                 law_document['Thuộc tính']['Ngày ban hành'] = datetime.strptime(law_document['Thuộc tính']['Ngày ban hành'][0], "%d/%m/%Y")
-            if ('Ngày có hiệu lực' in law_document['Thuộc tính'] and law_document['Thuộc tính']['Ngày có hiệu lực'] is not None and 'N/a' not in law_document['Thuộc tính']['Ngày có hiệu lực']):
+            else:
+                law_document['Thuộc tính'].pop("Ngày ban hành", None)
+            if ('Ngày có hiệu lực' in law_document['Thuộc tính'] and law_document['Thuộc tính']['Ngày có hiệu lực'] is not None and '...' not in law_document['Thuộc tính']['Ngày có hiệu lực'][0]):
                 law_document['Thuộc tính']['Ngày có hiệu lực'] = datetime.strptime(law_document['Thuộc tính']['Ngày có hiệu lực'][0], "%d/%m/%Y")
-            if ('Ngày hết hiệu lực' in law_document['Thuộc tính'] and law_document['Thuộc tính']['Ngày hết hiệu lực'] is not None and 'N/a' not in law_document['Thuộc tính']['Ngày hết hiệu lực']):
+            else:
+                law_document['Thuộc tính'].pop("Ngày có hiệu lực", None)
+            if ('Ngày hết hiệu lực' in law_document['Thuộc tính'] and law_document['Thuộc tính']['Ngày hết hiệu lực'] is not None and '...' not in law_document['Thuộc tính']['Ngày hết hiệu lực'][0]):
                 law_document['Thuộc tính']['Ngày hết hiệu lực'] = datetime.strptime(law_document['Thuộc tính']['Ngày hết hiệu lực'][0], "%d/%m/%Y")
-            if ('Ngày đăng công báo' in law_document['Thuộc tính'] and law_document['Thuộc tính']['Ngày đăng công báo'] is not None and 'N/a' not in law_document['Thuộc tính']['Ngày đăng công báo']):
+            else:
+                law_document['Thuộc tính'].pop("Ngày hết hiệu lực", None)
+            if ('Ngày đăng công báo' in law_document['Thuộc tính'] and law_document['Thuộc tính']['Ngày đăng công báo'] is not None and '...' not in law_document['Thuộc tính']['Ngày đăng công báo'][0]):
                 law_document['Thuộc tính']['Ngày đăng công báo'] = datetime.strptime(law_document['Thuộc tính']['Ngày đăng công báo'][0], "%d/%m/%Y")
+            else:
+                law_document['Thuộc tính'].pop("Ngày đăng công báo", None)
 
         if (law_document['Lịch sử'] is not None and 'N/a' not in law_document['Lịch sử']):
             law_document['Lịch sử'] = ast.literal_eval(law_document['Lịch sử'])
@@ -73,7 +80,8 @@ def index_record(raw_path, law_document):
         index_document_law_to_es(law_document)
     except Exception as e:
         print("------------------------------------------------------------------------------")
-        # print('error: ', law_document)
+        # print (datetime.strptime(law_document['Thuộc tính']['Ngày đăng công báo'][0]))
+        print('error: ', e)
 
 def load_vbpl_csv(raw_path):
     df = pd.read_csv(raw_path + '/data.csv', encoding='utf-8')
@@ -90,7 +98,7 @@ def index_document_law_to_es(law_document):
     index = "law_tech"
     doc_type = '_doc'
     id = law_document.get('id')
-    print(id)
+    # print(id)
     insert_doc(es, index, doc_type, id, law_document, verbose=True)
 
 

@@ -1,2 +1,2 @@
 INDEX_LAW = 'law_tech'
-TYPE_DOCUMENT = 'document'
+TYPE_DOCUMENT = '_doc'
