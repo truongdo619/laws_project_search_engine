@@ -6,15 +6,16 @@ from concurrent.futures import ThreadPoolExecutor
 from config.config_project import folder_output_path
 from helper.reader_helper import get_content, is_exist_file
 from es_service.es_connection import elasticsearch_connection, insert_doc
-
+from helper.converter_helper import convert_vi_field_to_es_field
 import pandas as pd
 import time
 from datetime import datetime
 
-def index_record(raw_path, law_document):
+def index_record(raw_path, law_document, id):
     try:
-        id = law_document.get('url').split('ItemID=')[1].split('&')[0]
-        law_document.update({'id': id})
+        source_id = law_document.get('url').split('ItemID=')[1].split('&')[0]
+        law_document.update({'source_id': source_id})
+        law_document.update({'id': str(id)})
         full_text = ''
         full_text_eng = ''
         if (law_document.get('Toàn văn') is not None and 'N/a' not in law_document.get('Toàn văn')):
@@ -67,6 +68,8 @@ def index_record(raw_path, law_document):
             law_document['Lược đồ'] = ast.literal_eval(law_document['Lược đồ'])
         law_document['full_text'] = full_text
         law_document['full_text_eng'] = full_text_eng
+        law_document = convert_vi_field_to_es_field(law_document)
+
         #print(row_dict)
         # print(row['url'])
         # print(row['Tên VB'])
@@ -90,7 +93,7 @@ def load_vbpl_csv(raw_path):
     for idx, row in df.iterrows():
         law_document = row.to_dict()
         # index_record(raw_path, law_document)
-        executor.submit(index_record, raw_path, law_document)
+        executor.submit(index_record, raw_path, law_document, idx)
 
 
 def index_document_law_to_es(law_document):
@@ -98,7 +101,7 @@ def index_document_law_to_es(law_document):
     index = "law_tech"
     doc_type = '_doc'
     id = law_document.get('id')
-    # print(id)
+    print(id)
     insert_doc(es, index, doc_type, id, law_document, verbose=True)
 
 
@@ -106,5 +109,5 @@ def execute():
     raw_path = folder_output_path + '/vbpl/raw'
     load_vbpl_csv(raw_path)
 
-time.sleep(30)
+# time.sleep(30)
 execute()

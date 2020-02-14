@@ -5,18 +5,18 @@ from service.common.common import get_by_attribute_from_array_dict
 
 
 def get_source_default():
-    source = ['url', 'Tên VB', 'Thuộc tính']
+    source = ['url', 'title', 'attribute']
     return source
 
 
 def get_sort_by_date_issued(desc=True):  # Ngày ban hành
     if desc:
         return {
-            "Thuộc tính.Ngày ban hành.keyword": {"order": "desc"}
+            "attribute.issued_date.keyword": {"order": "desc"}
         }
     else:
         return {
-            "Thuộc tính.Ngày ban hành.keyword": {"order": "asc"}
+            "attribute.issued_date.keyword": {"order": "asc"}
         }
 
 
@@ -28,7 +28,7 @@ def get_filter_scope(scope='Toàn quốc'):
     if scope == 'Toàn quốc':
         return {
             "term": {
-                "Thuộc tính.Phạm vi.keyword": "Toàn quốc"
+                "attribute.effective_area.keyword": "Toàn quốc"
             }
         }
 
@@ -39,7 +39,7 @@ def get_filter_scope(scope='Toàn quốc'):
 def get_condition_by_document_type(document_type_name):
     return {
         "match_phrase": {
-            "Thuộc tính.Loại văn bản.keyword": {
+            "attribute.document_type.keyword": {
                 "query": document_type_name
             }
         }
@@ -49,7 +49,7 @@ def get_condition_by_document_type(document_type_name):
 def get_condition_by_department_type(department_name):
     return {
         "match_phrase": {
-            "Thuộc tính.Ngành.keyword": {
+            "attribute.document_department.keyword": {
                 "query": department_name
             }
         }
@@ -60,7 +60,7 @@ def get_condition_by_department_type(department_name):
 def get_condition_by_topic_type(topic_name):
     return {
         "match_phrase": {
-            "Thuộc tính.Lĩnh vực.keyword": {
+            "attribute.document_field.keyword": {
                 "query": topic_name
             }
         }
@@ -106,14 +106,14 @@ def get_aggregations_of_fields():
     return {
                 "count_is": {
                   "terms" : {
-                    "field" : "Thuộc tính.Lĩnh vực.keyword"
+                    "field" : "attribute.document_field.keyword"
                   }
                 }
         }
 
 def range_issued_date( gte, lte):
     return {
-        "Thuộc tính.Ngày ban hành": {
+        "attribute.issued_date": {
             "gte": gte,
             "lte": lte
         }

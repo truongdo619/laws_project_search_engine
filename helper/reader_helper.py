@@ -131,6 +131,18 @@ def count_line_all_gz(folder_path):
     return count
 
 
+def load_jsonl_from_gz(file_gz_path, min_length_per_line=5):
+    output_objs = []
+    for text in get_content_by_gz(file_gz_path).split('\n'):
+        try:
+            if len(text) >= min_length_per_line:
+                obj = json.loads(text)
+                output_objs.append(obj)
+        except Exception as e:
+            print(e)
+    return output_objs
+
+
 # print(get_content_by_gz('/mnt/e/wp/startup/meowbees/data/shopee/output/sitemap/sitemap.categories.xml.gz'))
 # files_absolute_path, files_name = get_files_in_folder('/mnt/e/wp/startup/meowbees/data/shopee/output/sitemap')
 

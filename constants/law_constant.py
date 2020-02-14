@@ -131,9 +131,9 @@ RELATION_TERMS = {
 MAPPING = {
     "mappings" : {
       "properties" : {
-        "Lược đồ" : {
+        "schema" : {
           "properties" : {
-            "Văn bản HD, QĐ chi tiết " : {
+            "instructions_give_document" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -142,7 +142,7 @@ MAPPING = {
                 }
               }
             },
-            "Văn bản bị hết hiệu lực 1 phần " : {
+            "canceled_one_part_document" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -151,7 +151,7 @@ MAPPING = {
                 }
               }
             },
-            "Văn bản bị đình chỉ" : {
+            "suspended_document" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -160,7 +160,7 @@ MAPPING = {
                 }
               }
             },
-            "Văn bản bổ sung" : {
+            "extend_document" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -169,7 +169,7 @@ MAPPING = {
                 }
               }
             },
-            "Văn bản căn cứ" : {
+            "pursuant_document" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -178,7 +178,7 @@ MAPPING = {
                 }
               }
             },
-            "Văn bản dẫn chiếu" : {
+            "reference_document" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -187,7 +187,7 @@ MAPPING = {
                 }
               }
             },
-            "Văn bản hiện thời" : {
+            "current_document" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -196,7 +196,7 @@ MAPPING = {
                 }
               }
             },
-            "Văn bản hết hiệu lực" : {
+            "canceled_document" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -205,7 +205,7 @@ MAPPING = {
                 }
               }
             },
-            "Văn bản liên quan khác" : {
+            "other_document_related" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -214,7 +214,7 @@ MAPPING = {
                 }
               }
             },
-            "Văn bản quy định hết hiệu lực" : {
+            "cancel_document" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -223,7 +223,7 @@ MAPPING = {
                 }
               }
             },
-            "Văn bản quy định hết hiệu lực 1 phần " : {
+            "cancel_one_part_document" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -232,7 +232,7 @@ MAPPING = {
                 }
               }
             },
-            "Văn bản sửa đổi" : {
+            "amend_document" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -241,7 +241,7 @@ MAPPING = {
                 }
               }
             },
-            "Văn bản đình chỉ" : {
+            "suspension_document" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -250,7 +250,7 @@ MAPPING = {
                 }
               }
             },
-            "Văn bản đình chỉ 1 phần" : {
+            "suspension_one_part_document" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -259,7 +259,7 @@ MAPPING = {
                 }
               }
             },
-            "Văn bản được HD, QĐ chi tiết" : {
+            "instructions_document" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -268,7 +268,7 @@ MAPPING = {
                 }
               }
             },
-            "Văn bản được bổ sung " : {
+            "extended_document" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -277,7 +277,16 @@ MAPPING = {
                 }
               }
             },
-            "Văn bản được sửa đổi" : {
+            "amended_document" : {
+              "type" : "text",
+              "fields" : {
+                "keyword" : {
+                  "type" : "keyword",
+                  "ignore_above" : 256
+                }
+              }
+            },
+            "suspended_one_part_document" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -288,7 +297,7 @@ MAPPING = {
             }
           }
         },
-        "Lịch sử" : {
+        "history" : {
           "type" : "text",
           "fields" : {
             "keyword" : {
@@ -297,9 +306,9 @@ MAPPING = {
             }
           }
         },
-        "Thuộc tính" : {
+        "attribute" : {
           "properties" : {
-            "Cơ quan ban hành/ Chức danh / Người ký" : {
+            "issuing_body/office/signer" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -308,7 +317,7 @@ MAPPING = {
                 }
               }
             },
-            "Loại văn bản" : {
+            "document_type" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -317,7 +326,7 @@ MAPPING = {
                 }
               }
             },
-            "Lí do hết hiệu lực" : {
+            "the_reason_for_this_expiration" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -326,7 +335,7 @@ MAPPING = {
                 }
               }
             },
-            "Lý do hết hiệu lực 1 phần" : {
+            "the_reason_for_this_expiration_part" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -335,7 +344,7 @@ MAPPING = {
                 }
               }
             },
-            "Lĩnh vực" : {
+            "document_field" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -344,7 +353,7 @@ MAPPING = {
                 }
               }
             },
-            "Nguồn thu thập" : {
+            "collection_source" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -353,7 +362,7 @@ MAPPING = {
                 }
               }
             },
-            "Ngành" : {
+            "document_department" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -362,7 +371,7 @@ MAPPING = {
                 }
               }
             },
-            "Ngày ban hành" : {
+            "issued_date" : {
               "type" : "date",
               "fields" : {
                 "keyword" : {
@@ -371,7 +380,7 @@ MAPPING = {
                 }
               }
             },
-            "Ngày có hiệu lực" : {
+            "effective_date" : {
               "type" : "date",
               "fields" : {
                 "keyword" : {
@@ -380,7 +389,7 @@ MAPPING = {
                 }
               }
             },
-            "Ngày hết hiệu lực" : {
+            "expiry_date" : {
               "type" : "date",
               "fields" : {
                 "keyword" : {
@@ -389,7 +398,7 @@ MAPPING = {
                 }
               }
             },
-            "Ngày đăng công báo" : {
+            "gazette_date" : {
               "type" : "date",
               "fields" : {
                 "keyword" : {
@@ -398,7 +407,7 @@ MAPPING = {
                 }
               }
             },
-            "Phạm vi" : {
+            "effective_area" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -407,7 +416,7 @@ MAPPING = {
                 }
               }
             },
-            "Số ký hiệu" : {
+            "official_number" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -416,7 +425,7 @@ MAPPING = {
                 }
               }
             },
-            "Thông tin" : {
+            "document_info" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -425,7 +434,7 @@ MAPPING = {
                 }
               }
             },
-            "Thông tin áp dụng" : {
+            "information_applicable" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -436,173 +445,7 @@ MAPPING = {
             }
           }
         },
-        "Toàn văn" : {
-          "type" : "text",
-          "fields" : {
-            "keyword" : {
-              "type" : "keyword",
-              "ignore_above" : 256
-            }
-          }
-        },
-        "Tên VB" : {
-          "type" : "text",
-          "fields" : {
-            "keyword" : {
-              "type" : "keyword",
-              "ignore_above" : 256
-            }
-          }
-        },
-        "VB Liên Quan" : {
-          "properties" : {
-            "Văn bản bị bãi bỏ" : {
-              "type" : "text",
-              "fields" : {
-                "keyword" : {
-                  "type" : "keyword",
-                  "ignore_above" : 256
-                }
-              }
-            },
-            "Văn bản bị bãi bỏ một phần" : {
-              "type" : "text",
-              "fields" : {
-                "keyword" : {
-                  "type" : "keyword",
-                  "ignore_above" : 256
-                }
-              }
-            },
-            "Văn bản bị hết hiệu lực" : {
-              "type" : "text",
-              "fields" : {
-                "keywordated" : {
-                  "type" : "keyword",
-                  "ignore_above" : 256
-                }
-              }
-            },
-            "Văn bản bị hủy bỏ bỏ" : {
-              "type" : "text",
-              "fields" : {
-                "keyword" : {
-                  "type" : "keyword",
-                  "ignore_above" : 256
-                }
-              }
-            },
-            "Văn bản bị hủy bỏ một phần" : {
-              "type" : "text",
-              "fields" : {
-                "keyword" : {
-                  "type" : "keyword",
-                  "ignore_above" : 256
-                }
-              }
-            },
-            "Văn bản bị sửa đổi" : {
-              "type" : "text",
-              "fields" : {
-                "keyword" : {
-                  "type" : "keyword",
-                  "ignore_above" : 256
-                }
-              }
-            },
-            "Văn bản bị thay thế" : {
-              "type" : "text",
-              "fields" : {
-                "keyword" : {
-                  "type" : "keyword",
-                  "ignore_above" : 256
-                }
-              }
-            },
-            "Văn bản bị thay thế một phần" : {
-              "type" : "text",
-              "fields" : {
-                "keyword" : {
-                  "type" : "keyword",
-                  "ignore_above" : 256
-                }
-              }
-            },
-            "Văn bản bị đình chỉ" : {
-              "type" : "text",
-              "fields" : {
-                "keyword" : {
-                  "type" : "keyword",
-                  "ignore_above" : 256
-                }
-              }
-            },
-            "Văn bản bị đính chính" : {
-              "type" : "text",
-              "fields" : {
-                "keyword" : {
-                  "type" : "keyword",
-                  "ignore_above" : 256
-                }
-              }
-            },
-            "Văn bản căn cứ" : {
-              "type" : "text",
-              "fields" : {
-                "keyword" : {
-                  "type" : "keyword",
-                  "ignore_above" : 256
-                }
-              }
-            },
-            "Văn bản dẫn chiếu" : {
-              "type" : "text",
-              "fields" : {
-                "keyword" : {
-                  "type" : "keyword",
-                  "ignore_above" : 256
-                }
-              }
-            },
-            "Văn bản hết hiệu lực 1 phần" : {
-              "type" : "text",
-              "fields" : {
-                "keyword" : {
-                  "type" : "keyword",
-                  "ignore_above" : 256
-                }
-              }
-            },
-            "Văn bản được hướng dẫn" : {
-              "type" : "text",
-              "fields" : {
-                "keyword" : {
-                  "type" : "keyword",
-                  "ignore_above" : 256
-                }
-              }
-            },
-            "Văn bản được quy định chi tiết, hướng dẫn thi hành" : {
-              "type" : "text",
-              "fields" : {
-                "keyword" : {
-                  "type" : "keyword",
-                  "ignore_above" : 256
-                }
-              }
-            },
-            "Văn bản được sửa đổi bổ sung" : {
-              "type" : "text",
-              "fields" : {
-                "keyword" : {
-                  "type" : "keyword",
-                  "ignore_above" : 256
-                }
-              }
-            }
-          }
-        },
-        "VB Tiếng anh" : {
+        "title" : {
           "type" : "text",
           "fields" : {
             "keyword" : {
@@ -621,6 +464,15 @@ MAPPING = {
           }
         },
         "full_text_eng" : {
+          "type" : "text",
+          "fields" : {
+            "keyword" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "source_id" : {
           "type" : "text",
           "fields" : {
             "keyword" : {

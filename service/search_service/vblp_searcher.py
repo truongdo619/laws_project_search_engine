@@ -48,12 +48,12 @@ def search_content(es, content, time_range = None, match_phrase=False, minimum_s
                                 "should" : [
                                     {
                                         "match_phrase": {
-                                            "Thuộc tính.Số ký hiệu": keyword
+                                            "attribute.official_number": keyword
                                         }
                                     },
                                     {
                                         "match_phrase": {
-                                            "Tên VB": keyword
+                                            "title": keyword
                                         }
                                     },
                                     {
@@ -87,7 +87,7 @@ def search_content(es, content, time_range = None, match_phrase=False, minimum_s
                                 "should" : [
                                     {
                                         "match": {
-                                            "Thuộc tính.Số ký hiệu": {
+                                            "attribute.official_number": {
                                                 "query": keyword,
                                                 "minimum_should_match": minimum_should_match + '%'
                                             }
@@ -95,7 +95,7 @@ def search_content(es, content, time_range = None, match_phrase=False, minimum_s
                                     },
                                     {
                                         "match": {
-                                            "Tên VB": {
+                                            "title": {
                                                 "query": keyword,
                                                 "minimum_should_match": minimum_should_match + '%'
                                             }
@@ -133,22 +133,22 @@ def search_content(es, content, time_range = None, match_phrase=False, minimum_s
 
     if document_types_condition is not None:
         must_query = dictionary_to_array(query.get('query').get('bool')['must'])
-        new_must_query = must_query + [{ 'match_phrase' : { 'Thuộc tính.Loại văn bản' : document_types_condition }}]
+        new_must_query = must_query + [{ 'match_phrase' : { 'attribute.document_type' : document_types_condition }}]
         query.get('query').get('bool').update({'must': new_must_query})
 
     if doc_status is not None:
         must_query = dictionary_to_array(query.get('query').get('bool')['must'])
-        new_must_query = must_query + [{ 'match_phrase' : { 'Thuộc tính.Thông tin' : doc_status }}]
+        new_must_query = must_query + [{ 'match_phrase' : { 'attribute.document_info' : doc_status }}]
         query.get('query').get('bool').update({'must': new_must_query})
 
     if issuing_body is not None:
         must_query = dictionary_to_array(query.get('query').get('bool')['must'])
-        new_must_query = must_query + [{ 'match_phrase' : { 'Thuộc tính.Cơ quan ban hành/ Chức danh / Người ký' : issuing_body }}]
+        new_must_query = must_query + [{ 'match_phrase' : { 'attribute.issuing_body/office/signer' : issuing_body }}]
         query.get('query').get('bool').update({'must': new_must_query})
 
     if signer is not None:
         must_query = dictionary_to_array(query.get('query').get('bool')['must'])
-        new_must_query = must_query + [{ 'match_phrase' : { 'Thuộc tính.Cơ quan ban hành/ Chức danh / Người ký' : signer }}]
+        new_must_query = must_query + [{ 'match_phrase' : { 'attribute.issuing_body/office/signer' : signer }}]
         query.get('query').get('bool').update({'must': new_must_query})
 
     print(f'querySearchContent: {query}')
@@ -159,7 +159,7 @@ def search_content(es, content, time_range = None, match_phrase=False, minimum_s
         return {}
     for hit in res['hits']['hits']:
         print(hit["_source"])
-    return res['hits']
+    return res
 
 
 def search_title(es, title, limit=5,time_range = None,  match_phrase=False, _source=None,minimum_should_match="80",
@@ -196,12 +196,12 @@ def search_title(es, title, limit=5,time_range = None,  match_phrase=False, _sou
                                 "should": [
                                     {
                                         "match_phrase": {
-                                            "Tên VB": keyword
+                                            "title": keyword
                                         }
                                     },
                                     {
                                         "match_phrase": {
-                                            "Thuộc tính.Thông tin": keyword
+                                            "attribute.document_info": keyword
                                         }
                                     }
                                 ]
@@ -231,7 +231,7 @@ def search_title(es, title, limit=5,time_range = None,  match_phrase=False, _sou
                                 "should": [
                                     {
                                         "match":{
-                                            "Tên VB": {
+                                            "title": {
                                                 "query": keyword,
                                                 "minimum_should_match": minimum_should_match + '%'
                                             }
@@ -239,7 +239,7 @@ def search_title(es, title, limit=5,time_range = None,  match_phrase=False, _sou
                                     },
                                     {
                                         "match_phrase": {
-                                            "Thuộc tính.Thông tin": keyword
+                                            "attribute.document_info": keyword
                                         }
                                     }
                                 ]
@@ -256,24 +256,25 @@ def search_title(es, title, limit=5,time_range = None,  match_phrase=False, _sou
             "_source": _source,
             "size": limit
         }
+
     if document_types_condition is not None:
         must_query = dictionary_to_array(query.get('query').get('bool')['must'])
-        new_must_query = must_query + [{ 'match_phrase' : { 'Thuộc tính.Loại văn bản' : document_types_condition }}]
+        new_must_query = must_query + [{ 'match_phrase' : { 'attribute.document_type' : document_types_condition }}]
         query.get('query').get('bool').update({'must': new_must_query})
 
     if doc_status is not None:
         must_query = dictionary_to_array(query.get('query').get('bool')['must'])
-        new_must_query = must_query + [{ 'match_phrase' : { 'Thuộc tính.Thông tin' : doc_status }}]
+        new_must_query = must_query + [{ 'match_phrase' : { 'attribute.document_info' : doc_status }}]
         query.get('query').get('bool').update({'must': new_must_query})
 
     if issuing_body is not None:
         must_query = dictionary_to_array(query.get('query').get('bool')['must'])
-        new_must_query = must_query + [{ 'match_phrase' : { 'Thuộc tính.Cơ quan ban hành/ Chức danh / Người ký' : issuing_body }}]
+        new_must_query = must_query + [{ 'match_phrase' : { 'attribute.issuing_body/office/signer' : issuing_body }}]
         query.get('query').get('bool').update({'must': new_must_query})
 
     if signer is not None:
         must_query = dictionary_to_array(query.get('query').get('bool')['must'])
-        new_must_query = must_query + [{ 'match_phrase' : { 'Thuộc tính.Cơ quan ban hành/ Chức danh / Người ký' : signer }}]
+        new_must_query = must_query + [{ 'match_phrase' : { 'attribute.issuing_body/office/signer' : signer }}]
         query.get('query').get('bool').update({'must': new_must_query})
 
     # if filter_builder is not None and len(filter_builder) > 0:
@@ -320,7 +321,7 @@ def search_codes(es, code,time_range = None, limit=5, match_phrase=False, _sourc
                     "should" : [],
                     "must":[ {
                         "match_phrase": {
-                                "Thuộc tính.Số ký hiệu": code
+                                "attribute.official_number": code
                             }
                         },
                         {
@@ -341,7 +342,7 @@ def search_codes(es, code,time_range = None, limit=5, match_phrase=False, _sourc
                     "should" : [],
                     "must":[ {
                         "match": {
-                                "Thuộc tính.Số ký hiệu": code
+                                "attribute.official_number": code
                             }
                         },
                         {
@@ -355,43 +356,45 @@ def search_codes(es, code,time_range = None, limit=5, match_phrase=False, _sourc
             "_source": _source,
             "size": limit
         }
+
     if document_types_condition is not None:
         must_query = dictionary_to_array(query.get('query').get('bool')['must'])
-        new_must_query = must_query + [{ 'match_phrase' : { 'Thuộc tính.Loại văn bản' : document_types_condition }}]
+        new_must_query = must_query + [{ 'match_phrase' : { 'attribute.document_type' : document_types_condition }}]
         query.get('query').get('bool').update({'must': new_must_query})
 
     if doc_status is not None:
         must_query = dictionary_to_array(query.get('query').get('bool')['must'])
-        new_must_query = must_query + [{ 'match_phrase' : { 'Thuộc tính.Thông tin' : doc_status }}]
+        new_must_query = must_query + [{ 'match_phrase' : { 'attribute.document_info' : doc_status }}]
         query.get('query').get('bool').update({'must': new_must_query})
 
     if issuing_body is not None:
         must_query = dictionary_to_array(query.get('query').get('bool')['must'])
-        new_must_query = must_query + [{ 'match_phrase' : { 'Thuộc tính.Cơ quan ban hành/ Chức danh / Người ký' : issuing_body }}]
+        new_must_query = must_query + [{ 'match_phrase' : { 'attribute.issuing_body/office/signer' : issuing_body }}]
         query.get('query').get('bool').update({'must': new_must_query})
 
     if signer is not None:
         must_query = dictionary_to_array(query.get('query').get('bool')['must'])
-        new_must_query = must_query + [{ 'match_phrase' : { 'Thuộc tính.Cơ quan ban hành/ Chức danh / Người ký' : signer }}]
+        new_must_query = must_query + [{ 'match_phrase' : { 'attribute.issuing_body/office/signer' : signer }}]
         query.get('query').get('bool').update({'must': new_must_query})
+
     res = es.search(index=INDEX_LAW, doc_type=TYPE_DOCUMENT, body=query)
     print("Got %d Hits:" % res['hits']['total']['value'])
     if res['hits']['total']['value'] == 0:
         return {}
     for hit in res['hits']['hits']:
         print(hit["_source"])
-    return res['hits']
+    return res
 
 
 def example():
     es = elasticsearch_connection
-    # search_content(es, content="35/2015/TT-NHNN", time_range={"gte" : "1940-01-01", "lte" : "2020-01-01"},  match_phrase=False,
+    # search_content(es, content="35/2015/TT-NHNN", time_range={"gte" : "2010-01-01", "lte" : "2020-01-01"},  match_phrase=False,
     #                editor_setting={'documentType': 4, 'title': '', 'departmentIds': [], 'topicIds': [],
     #                                'scopeId': 1})
     # search_title(es, title='35/2015/TT-NHNN', doc_status="Hết hiệu lực", document_types_condition='Thông tư', issuing_body="Ngân hàng Nhà nước Việt Nam",
-    #              signer='Nguyễn Phước Thanh', match_phrase=False, sorted_by=3)
+    #              signer='Nguyễn Phước Thanh', match_phrase=False, sorted_by=2)
     # get_by_id(es, '75724')
     # get_by_id(es, 'ds')
-    # search_codes(es,  '185/2007/NĐ-CP', time_range={"gte" : "2007-01-01", "lte" : "2020-01-01"}, match_phrase=True)
+    search_codes(es,  '185/2007/NĐ-CP', time_range={"gte" : "2007-01-01", "lte" : "2020-01-01"}, match_phrase=True)
 
 # example()
