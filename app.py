@@ -37,6 +37,7 @@ class GetById(Resource):
 
 match_all_parser = reqparse.RequestParser()
 match_all_parser.add_argument('size', default=5)
+match_all_parser.add_argument('from', default=0)
 @ns.route("/document/searchMatchAll")
 class searchMatchAll(Resource):
 
@@ -44,12 +45,13 @@ class searchMatchAll(Resource):
     def post(self):
         data = match_all_parser.parse_args()
         print(data)
-        document = search_match_all(elasticsearch_connection, limit=data['size'])
+        document = search_match_all(elasticsearch_connection, limit=data['size'], start=data['from'])
         return jsonify(document)
 
 
 content_parse = reqparse.RequestParser()
 content_parse.add_argument('content', required=True, default="Bảo hiểm xã hội")
+content_parse.add_argument('from', default=0)
 content_parse.add_argument('size', default=5)
 content_parse.add_argument('time_range', default=None, help = 'Example: { "gte" : "1940-01-01", "lte" : "2020-01-01"}')
 content_parse.add_argument('match_phrase', type=inputs.boolean, default=False)
@@ -71,7 +73,7 @@ class SearchContent(Resource):
         if data['time_range'] is not None:
             time_range = ast.literal_eval(data['time_range'])
         document = search_content(elasticsearch_connection, content=data['content'], time_range = time_range, match_phrase=data['match_phrase'],
-                   limit=data['size'], doc_status = data['doc_status'], document_types_condition=data['document_types_condition'],
+                   limit=data['size'], start=data['from'], doc_status = data['doc_status'], document_types_condition=data['document_types_condition'],
                     document_field=data['document_field'], issuing_body = data['issuing_body'],
                     signer = data['signer'], sorted_by=data['sorted_by'], editor_setting=data['editor_setting'])
         return jsonify(document)
@@ -79,6 +81,7 @@ class SearchContent(Resource):
 
 title_parse = reqparse.RequestParser()
 title_parse.add_argument('title', required=True, default="Bảo hiểm xã hội")
+title_parse.add_argument('from', default=0)
 title_parse.add_argument('size', default=5)
 title_parse.add_argument('time_range', default=None, help = 'Example: { "gte" : "1940-01-01", "lte" : "2020-01-01"}')
 title_parse.add_argument('match_phrase', type=inputs.boolean, default=False)
@@ -102,6 +105,7 @@ class SearchTitle(Resource):
         document = search_title(elasticsearch_connection, title=data['title'], time_range=time_range,
                                   match_phrase=data['match_phrase'],
                                   limit=data['size'], doc_status=data['doc_status'],
+                                  start=data['from'],
                                   document_types_condition=data['document_types_condition'],
                                   document_field=data['document_field'],
                                   issuing_body=data['issuing_body'],
@@ -112,6 +116,7 @@ class SearchTitle(Resource):
 
 code_parse = reqparse.RequestParser()
 code_parse.add_argument('code', required=True, default="190/2007/NĐ-CP")
+code_parse.add_argument('from', default=0)
 code_parse.add_argument('size', default=5)
 code_parse.add_argument('time_range', default=None, help = 'Example: { "gte" : "1940-01-01", "lte" : "2020-01-01"}')
 code_parse.add_argument('match_phrase', type=inputs.boolean, default=False)
@@ -135,6 +140,7 @@ class SearchCodes(Resource):
         document = search_codes(elasticsearch_connection, code=data['code'], time_range=time_range,
                                 match_phrase=data['match_phrase'],
                                 limit=data['size'], doc_status=data['doc_status'],
+                                start=data['from'],
                                 document_types_condition=data['document_types_condition'],
                                 document_field=data['document_field'],
                                 issuing_body=data['issuing_body'],

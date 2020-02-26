@@ -389,6 +389,15 @@ MAPPING = {
                 }
               }
             },
+            "enforced_date" : {
+              "type" : "date",
+              "fields" : {
+                "keyword" : {
+                  "type" : "keyword",
+                  "ignore_above" : 256
+                }
+              }
+            },
             "expiry_date" : {
               "type" : "date",
               "fields" : {

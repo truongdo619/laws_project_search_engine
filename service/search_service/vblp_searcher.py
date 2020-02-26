@@ -9,7 +9,7 @@ from service.search_service.vblp_query_helper import get_source_default, get_sor
 from datetime import date
 
 
-def search_match_all(es, limit=5):
+def search_match_all(es, limit=5, start=0):
 
     _source = get_source_default()
     query = {
@@ -18,6 +18,7 @@ def search_match_all(es, limit=5):
         },
         "aggs": get_aggregations_of_fields(),
         "_source": _source,
+        'from': start,
         "size": limit
     }
 
@@ -39,7 +40,7 @@ def get_by_id(es, id):
 
 
 def search_content(es, content, time_range = None, match_phrase=False, minimum_should_match = '50',
-                   limit=5, _source=None, doc_status = None, document_types_condition=None, document_field = None, issuing_body = None, signer = None, sorted_by=1 ,  editor_setting=None):
+                   limit=5, start=0, _source=None, doc_status = None, document_types_condition=None, document_field = None, issuing_body = None, signer = None, sorted_by=1 ,  editor_setting=None):
     keyword = content
     query = {}
     if _source is None:
@@ -101,6 +102,7 @@ def search_content(es, content, time_range = None, match_phrase=False, minimum_s
             "aggs": get_aggregations_of_fields(),
             "sort": sort,
             "_source": _source,
+            'from': start,
             "size": limit
         }
     else:
@@ -156,6 +158,7 @@ def search_content(es, content, time_range = None, match_phrase=False, minimum_s
             "aggs": get_aggregations_of_fields(),
             "sort": sort,
             "_source": _source,
+            'from': start,
             "size": limit
         }
 
@@ -202,7 +205,7 @@ def search_content(es, content, time_range = None, match_phrase=False, minimum_s
     return res
 
 
-def search_title(es, title, limit=5,time_range = None,  match_phrase=False, _source=None,minimum_should_match="80",
+def search_title(es, title, limit=5, start = 0, time_range = None,  match_phrase=False, _source=None,minimum_should_match="80",
                  doc_status = None, document_types_condition=None, document_field = None, issuing_body = None, signer = None, sorted_by=1 , editor_setting=None):
     keyword = title
     query = {}
@@ -257,6 +260,7 @@ def search_title(es, title, limit=5,time_range = None,  match_phrase=False, _sou
             "aggs": get_aggregations_of_fields(),
             "sort": sort,
             "_source": _source,
+            'from': start,
             "size": limit
         }
     else:
@@ -296,6 +300,7 @@ def search_title(es, title, limit=5,time_range = None,  match_phrase=False, _sou
             "aggs": get_aggregations_of_fields(),
             "sort": sort,
             "_source": _source,
+            'from': start,
             "size": limit
         }
 
@@ -340,7 +345,7 @@ def search_title(es, title, limit=5,time_range = None,  match_phrase=False, _sou
     return res
 
 
-def search_codes(es, code,time_range = None, limit=5, match_phrase=False, _source=None,
+def search_codes(es, code,time_range = None, limit=5, start=0,  match_phrase=False, _source=None,
                  doc_status = None, document_types_condition=None, document_field = None, issuing_body = None, signer = None, sorted_by=1, editor_setting=None):
     query = {}
 
@@ -381,6 +386,7 @@ def search_codes(es, code,time_range = None, limit=5, match_phrase=False, _sourc
             "aggs": get_aggregations_of_fields(),
             "sort": sort,
             "_source": _source,
+            'from': start,
             "size": limit
         }
     else:
@@ -403,6 +409,7 @@ def search_codes(es, code,time_range = None, limit=5, match_phrase=False, _sourc
             "aggs": get_aggregations_of_fields(),
             "sort": sort,
             "_source": _source,
+            'from': start,
             "size": limit
         }
 

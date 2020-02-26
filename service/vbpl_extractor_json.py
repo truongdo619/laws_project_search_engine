@@ -4,23 +4,39 @@ import os
 from concurrent.futures import ThreadPoolExecutor
 
 from config.config_project import folder_output_path
-from helper.reader_helper import load_jsonl_from_gz
+from helper.reader_helper import load_jsonl_from_gz, load_json
 from es_service.es_connection import elasticsearch_connection, insert_doc
+from datetime import datetime
+import time
 
 def index_record(file, id):
     try:
-        law_document = load_jsonl_from_gz(file)
+        law_document = load_json(file)
+
         law_document.update({'id': str(id)})
-        #print(row_dict)
-        # print(row['url'])
-        # print(row['Tên VB'])
-        # print(row['Toàn văn'])
-        # print(row['VB Tiếng anh'])
-        # print(row['Thuộc tính'])
-        # print(row['Lịch sử'])
-        # print(row['VB Liên Quan'])
-        # print(row['Lược đồ'])
-        # break
+        if (law_document['attribute'] is not None):
+            try:
+                law_document['attribute']['issued_date'] = datetime.strptime(law_document['attribute']['issued_date'], "%d/%m/%Y")
+            except:
+                law_document['attribute']["issued_date"] = None
+            try:
+                law_document['attribute']['effective_date'] = datetime.strptime(law_document['attribute']['effective_date'], "%d/%m/%Y")
+            except:
+                law_document['attribute']["effective_date"] = None
+            try:
+                law_document['attribute']['expiry_date'] = datetime.strptime(law_document['attribute']['expiry_date'], "%d/%m/%Y")
+            except:
+                law_document['attribute']["expiry_date"] = None
+            try:
+                law_document['attribute']['gazette_date'] = datetime.strptime(law_document['attribute']['gazette_date'], "%d/%m/%Y")
+            except:
+                law_document['attribute']["gazette_date"] = None
+            try:
+                law_document['attribute']['enforced_date'] = datetime.strptime(law_document['attribute']['enforced_date'], "%d/%m/%Y")
+            except:
+                law_document['attribute']["enforced_date"] = None
+
+        print(law_document['id'])
         index_document_law_to_es(law_document)
     except Exception as e:
         print("------------------------------------------------------------------------------")
@@ -37,15 +53,16 @@ def get_gz_path(base_path):
 
 def load_vbpl(raw_path):
     files = get_gz_path(raw_path)
-    executor = ThreadPoolExecutor(max_workers=50)
-
-    for idx, file in enumerate(files):
-        executor.submit(index_record, file)
+    print(len(files))
+    index_record(files[10000], 200000)
+    # executor = ThreadPoolExecutor(max_workers=50)
+    # for idx, file in enumerate(files):
+    #     executor.submit(index_record, file, idx)
 
 
 def index_document_law_to_es(law_document):
     es = elasticsearch_connection
-    index = "law_tech"
+    index = "law_tech2"
     doc_type = '_doc'
     id = law_document.get('id')
     print(id)
@@ -53,7 +70,7 @@ def index_document_law_to_es(law_document):
 
 
 def execute():
-    raw_path = folder_output_path + '/vbpl/raw'
+    raw_path = '/run/media/kodiak/New Volume/20200224_164327/transform'
     load_vbpl(raw_path)
 
 # time.sleep(30)

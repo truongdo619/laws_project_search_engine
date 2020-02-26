@@ -82,7 +82,7 @@ def create_index(es, index, mapping, verbose=True):
 def example():
     es = elasticsearch_connection
     check_status_es(es)
-    index = "law_tech"
+    index = "law_tech2"
     create_index(es, index, MAPPING)
     # doc_type = 'tweet'
     # body = {
@@ -117,4 +117,4 @@ def example():
     # print('done')
 
 # time.sleep(30)
-example()
+# example()

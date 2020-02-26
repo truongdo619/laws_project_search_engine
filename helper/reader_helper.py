@@ -142,6 +142,10 @@ def load_jsonl_from_gz(file_gz_path, min_length_per_line=5):
             print(e)
     return output_objs
 
+def load_json(file_path):
+    with gzip.open(file_path, 'rt', encoding='utf-8') as zipfile:
+        my_object = json.load(zipfile)
+    return my_object
 
 # print(get_content_by_gz('/mnt/e/wp/startup/meowbees/data/shopee/output/sitemap/sitemap.categories.xml.gz'))
 # files_absolute_path, files_name = get_files_in_folder('/mnt/e/wp/startup/meowbees/data/shopee/output/sitemap')
