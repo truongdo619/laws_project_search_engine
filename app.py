@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, send_file
-from flask_restplus import Resource, Api, reqparse
+from flask_restplus import Resource, Api, reqparse, inputs
 from flask_cors import CORS
-from service.search_service.vblp_searcher import search_content, get_by_id, search_title, search_codes
+from service.search_service.vblp_searcher import search_content, get_by_id, search_title, search_codes, search_match_all
 from es_service.es_connection import elasticsearch_connection
 from service.search_service.vblp_searcher_for_support import search_for_support
 import pdfkit
@@ -28,7 +28,6 @@ ns = api.namespace('api/lawtech', description='LawTech API')
 class GetById(Resource):
     parser = api.parser()
 
-
     @ns.doc('Get document by id', parser=parser)
     def get(self, id):
         print('prepare find', id)
@@ -36,14 +35,27 @@ class GetById(Resource):
 
         return jsonify(document)
 
+match_all_parser = reqparse.RequestParser()
+match_all_parser.add_argument('size', default=5)
+@ns.route("/document/searchMatchAll")
+class searchMatchAll(Resource):
+
+    @ns.expect(match_all_parser)
+    def post(self):
+        data = match_all_parser.parse_args()
+        print(data)
+        document = search_match_all(elasticsearch_connection, limit=data['size'])
+        return jsonify(document)
+
 
 content_parse = reqparse.RequestParser()
 content_parse.add_argument('content', required=True, default="Bảo hiểm xã hội")
 content_parse.add_argument('size', default=5)
 content_parse.add_argument('time_range', default=None, help = 'Example: { "gte" : "1940-01-01", "lte" : "2020-01-01"}')
-content_parse.add_argument('match_phrase', type=bool, default=False)
+content_parse.add_argument('match_phrase', type=inputs.boolean, default=False)
 content_parse.add_argument('doc_status', default=None)
 content_parse.add_argument('document_types_condition', default=None)
+content_parse.add_argument('document_field', default=None)
 content_parse.add_argument('issuing_body', default=None)
 content_parse.add_argument('signer', default=None)
 content_parse.add_argument('sorted_by', type=int, default=1)
@@ -59,7 +71,8 @@ class SearchContent(Resource):
         if data['time_range'] is not None:
             time_range = ast.literal_eval(data['time_range'])
         document = search_content(elasticsearch_connection, content=data['content'], time_range = time_range, match_phrase=data['match_phrase'],
-                   limit=data['size'], doc_status = data['doc_status'], document_types_condition=data['document_types_condition'], issuing_body = data['issuing_body'],
+                   limit=data['size'], doc_status = data['doc_status'], document_types_condition=data['document_types_condition'],
+                    document_field=data['document_field'], issuing_body = data['issuing_body'],
                     signer = data['signer'], sorted_by=data['sorted_by'], editor_setting=data['editor_setting'])
         return jsonify(document)
         # return {}
@@ -68,9 +81,10 @@ title_parse = reqparse.RequestParser()
 title_parse.add_argument('title', required=True, default="Bảo hiểm xã hội")
 title_parse.add_argument('size', default=5)
 title_parse.add_argument('time_range', default=None, help = 'Example: { "gte" : "1940-01-01", "lte" : "2020-01-01"}')
-title_parse.add_argument('match_phrase', type=bool, default=False)
+title_parse.add_argument('match_phrase', type=inputs.boolean, default=False)
 title_parse.add_argument('doc_status', default=None)
 title_parse.add_argument('document_types_condition', default=None)
+title_parse.add_argument('document_field', default=None)
 title_parse.add_argument('issuing_body', default=None)
 title_parse.add_argument('signer', default=None)
 title_parse.add_argument('sorted_by', type=int, default=1)
@@ -89,6 +103,7 @@ class SearchTitle(Resource):
                                   match_phrase=data['match_phrase'],
                                   limit=data['size'], doc_status=data['doc_status'],
                                   document_types_condition=data['document_types_condition'],
+                                  document_field=data['document_field'],
                                   issuing_body=data['issuing_body'],
                                   signer=data['signer'], sorted_by=data['sorted_by'],
                                   editor_setting=data['editor_setting'])
@@ -99,9 +114,10 @@ code_parse = reqparse.RequestParser()
 code_parse.add_argument('code', required=True, default="190/2007/NĐ-CP")
 code_parse.add_argument('size', default=5)
 code_parse.add_argument('time_range', default=None, help = 'Example: { "gte" : "1940-01-01", "lte" : "2020-01-01"}')
-code_parse.add_argument('match_phrase', type=bool, default=False)
+code_parse.add_argument('match_phrase', type=inputs.boolean, default=False)
 code_parse.add_argument('doc_status', default=None)
 code_parse.add_argument('document_types_condition', default=None)
+code_parse.add_argument('document_field', default=None)
 code_parse.add_argument('issuing_body', default=None)
 code_parse.add_argument('signer', default=None)
 code_parse.add_argument('sorted_by', type=int, default=1)
@@ -120,6 +136,7 @@ class SearchCodes(Resource):
                                 match_phrase=data['match_phrase'],
                                 limit=data['size'], doc_status=data['doc_status'],
                                 document_types_condition=data['document_types_condition'],
+                                document_field=data['document_field'],
                                 issuing_body=data['issuing_body'],
                                 signer=data['signer'], sorted_by=data['sorted_by'],
                                 editor_setting=data['editor_setting'])

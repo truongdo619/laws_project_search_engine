@@ -3,10 +3,31 @@ sys.path.append('./')
 from elasticsearch import NotFoundError
 from helper.transform_format import dictionary_to_array
 from config.config_es import INDEX_LAW, TYPE_DOCUMENT
-from es_service.es_connection import elasticsearch_connection
+# from apps.search.es_service.es_connection import elasticsearch_connection
 from service.search_service.vblp_query_helper import get_source_default, get_sort_by_date_issued, get_sort_by_score, \
     get_filter_scope, get_aggregations_of_fields, range_issued_date
 from datetime import date
+
+
+def search_match_all(es, limit=5):
+
+    _source = get_source_default()
+    query = {
+        "query": {
+            "match_all": {}
+        },
+        "aggs": get_aggregations_of_fields(),
+        "_source": _source,
+        "size": limit
+    }
+
+    print(f'querySearchContent: {query}')
+    res = es.search(index=INDEX_LAW, doc_type=TYPE_DOCUMENT, body=query)
+    print("Got %d Hits:" % res['hits']['total']['value'])
+    print(res)
+    if res['hits']['total']['value'] == 0:
+        return {}
+    return res
 
 def get_by_id(es, id):
     try:
@@ -17,8 +38,8 @@ def get_by_id(es, id):
         return {}
 
 
-def search_content(es, content, time_range = None, match_phrase=False, minimum_should_match = '80',
-                   limit=5, _source=None, doc_status = None, document_types_condition=None, issuing_body = None, signer = None, sorted_by=1 , editor_setting=None):
+def search_content(es, content, time_range = None, match_phrase=False, minimum_should_match = '50',
+                   limit=5, _source=None, doc_status = None, document_types_condition=None, document_field = None, issuing_body = None, signer = None, sorted_by=1 ,  editor_setting=None):
     keyword = content
     query = {}
     if _source is None:
@@ -37,6 +58,7 @@ def search_content(es, content, time_range = None, match_phrase=False, minimum_s
     else:
         sort = get_sort_by_date_issued(desc=False)
 
+    print(match_phrase)
     if match_phrase:
         query = {
             "query": {
@@ -54,6 +76,11 @@ def search_content(es, content, time_range = None, match_phrase=False, minimum_s
                                     {
                                         "match_phrase": {
                                             "title": keyword
+                                        }
+                                    },
+                                    {
+                                        "match_phrase": {
+                                            "attribute.document_info": keyword
                                         }
                                     },
                                     {
@@ -89,7 +116,7 @@ def search_content(es, content, time_range = None, match_phrase=False, minimum_s
                                         "match": {
                                             "attribute.official_number": {
                                                 "query": keyword,
-                                                "minimum_should_match": minimum_should_match + '%'
+                                                # "minimum_should_match": minimum_should_match + '%'
                                             }
                                         }
                                     },
@@ -97,7 +124,15 @@ def search_content(es, content, time_range = None, match_phrase=False, minimum_s
                                         "match": {
                                             "title": {
                                                 "query": keyword,
-                                                "minimum_should_match": minimum_should_match + '%'
+                                                # "minimum_should_match": minimum_should_match + '%'
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "match": {
+                                            "attribute.document_info": {
+                                                "query": keyword,
+                                                # "minimum_should_match": minimum_should_match + '%'
                                             }
                                         }
                                     },
@@ -105,7 +140,7 @@ def search_content(es, content, time_range = None, match_phrase=False, minimum_s
                                         "match": {
                                             "full_text": {
                                                 "query": keyword,
-                                                "minimum_should_match": minimum_should_match + '%'
+                                                # "minimum_should_match": minimum_should_match + '%'
                                             }
                                         }
                                     }
@@ -151,6 +186,11 @@ def search_content(es, content, time_range = None, match_phrase=False, minimum_s
         new_must_query = must_query + [{ 'match_phrase' : { 'attribute.issuing_body/office/signer' : signer }}]
         query.get('query').get('bool').update({'must': new_must_query})
 
+    if document_field is not None:
+        must_query = dictionary_to_array(query.get('query').get('bool')['must'])
+        new_must_query = must_query + [{ 'match_phrase' : { 'attribute.document_field' : document_field }}]
+        query.get('query').get('bool').update({'must': new_must_query})
+
     print(f'querySearchContent: {query}')
     res = es.search(index=INDEX_LAW, doc_type=TYPE_DOCUMENT, body=query)
     print("Got %d Hits:" % res['hits']['total']['value'])
@@ -163,7 +203,7 @@ def search_content(es, content, time_range = None, match_phrase=False, minimum_s
 
 
 def search_title(es, title, limit=5,time_range = None,  match_phrase=False, _source=None,minimum_should_match="80",
-                 doc_status = None, document_types_condition=None, issuing_body = None, signer = None, sorted_by=1 , editor_setting=None):
+                 doc_status = None, document_types_condition=None, document_field = None, issuing_body = None, signer = None, sorted_by=1 , editor_setting=None):
     keyword = title
     query = {}
 
@@ -214,6 +254,7 @@ def search_title(es, title, limit=5,time_range = None,  match_phrase=False, _sou
                     "must_not": []
                 }
             },
+            "aggs": get_aggregations_of_fields(),
             "sort": sort,
             "_source": _source,
             "size": limit
@@ -233,7 +274,7 @@ def search_title(es, title, limit=5,time_range = None,  match_phrase=False, _sou
                                         "match":{
                                             "title": {
                                                 "query": keyword,
-                                                "minimum_should_match": minimum_should_match + '%'
+                                                # "minimum_should_match": minimum_should_match + '%'
                                             }
                                         }
                                     },
@@ -252,6 +293,7 @@ def search_title(es, title, limit=5,time_range = None,  match_phrase=False, _sou
                     "must_not": []
                 }
             },
+            "aggs": get_aggregations_of_fields(),
             "sort": sort,
             "_source": _source,
             "size": limit
@@ -275,6 +317,11 @@ def search_title(es, title, limit=5,time_range = None,  match_phrase=False, _sou
     if signer is not None:
         must_query = dictionary_to_array(query.get('query').get('bool')['must'])
         new_must_query = must_query + [{ 'match_phrase' : { 'attribute.issuing_body/office/signer' : signer }}]
+        query.get('query').get('bool').update({'must':  new_must_query})
+
+    if document_field is not None:
+        must_query = dictionary_to_array(query.get('query').get('bool')['must'])
+        new_must_query = must_query + [{ 'match_phrase' : { 'attribute.document_field' : document_field }}]
         query.get('query').get('bool').update({'must': new_must_query})
 
     # if filter_builder is not None and len(filter_builder) > 0:
@@ -294,7 +341,7 @@ def search_title(es, title, limit=5,time_range = None,  match_phrase=False, _sou
 
 
 def search_codes(es, code,time_range = None, limit=5, match_phrase=False, _source=None,
-                 doc_status = None, document_types_condition=None, issuing_body = None, signer = None, sorted_by=1, editor_setting=None):
+                 doc_status = None, document_types_condition=None, document_field = None, issuing_body = None, signer = None, sorted_by=1, editor_setting=None):
     query = {}
 
     if _source is None:
@@ -331,6 +378,7 @@ def search_codes(es, code,time_range = None, limit=5, match_phrase=False, _sourc
                     ]
                 }
             },
+            "aggs": get_aggregations_of_fields(),
             "sort": sort,
             "_source": _source,
             "size": limit
@@ -352,6 +400,7 @@ def search_codes(es, code,time_range = None, limit=5, match_phrase=False, _sourc
                     ]
                 }
             },
+            "aggs": get_aggregations_of_fields(),
             "sort": sort,
             "_source": _source,
             "size": limit
@@ -375,6 +424,11 @@ def search_codes(es, code,time_range = None, limit=5, match_phrase=False, _sourc
     if signer is not None:
         must_query = dictionary_to_array(query.get('query').get('bool')['must'])
         new_must_query = must_query + [{ 'match_phrase' : { 'attribute.issuing_body/office/signer' : signer }}]
+        query.get('query').get('bool').update({'must': new_must_query})
+
+    if document_field is not None:
+        must_query = dictionary_to_array(query.get('query').get('bool')['must'])
+        new_must_query = must_query + [{ 'match_phrase' : { 'attribute.document_field' : document_field }}]
         query.get('query').get('bool').update({'must': new_must_query})
 
     res = es.search(index=INDEX_LAW, doc_type=TYPE_DOCUMENT, body=query)
