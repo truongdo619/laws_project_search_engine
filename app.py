@@ -36,8 +36,9 @@ class GetById(Resource):
         return jsonify(document)
 
 match_all_parser = reqparse.RequestParser()
-match_all_parser.add_argument('size', default=5)
-match_all_parser.add_argument('from', default=0)
+match_all_parser.add_argument('size', type=int, default=5)
+match_all_parser.add_argument('from', type=int, default=0)
+match_all_parser.add_argument('sorted_by', type=int, default=None)
 @ns.route("/document/searchMatchAll")
 class searchMatchAll(Resource):
 
@@ -45,14 +46,14 @@ class searchMatchAll(Resource):
     def post(self):
         data = match_all_parser.parse_args()
         print(data)
-        document = search_match_all(elasticsearch_connection, limit=data['size'], start=data['from'])
+        document = search_match_all(elasticsearch_connection, limit=data['size'], start=data['from'], sort_by=data['sorted_by'])
         return jsonify(document)
 
 
 content_parse = reqparse.RequestParser()
 content_parse.add_argument('content', required=True, default="Bảo hiểm xã hội")
-content_parse.add_argument('from', default=0)
-content_parse.add_argument('size', default=5)
+content_parse.add_argument('from', type=int, default=0)
+content_parse.add_argument('size', type=int, default=5)
 content_parse.add_argument('time_range', default=None, help = 'Example: { "gte" : "1940-01-01", "lte" : "2020-01-01"}')
 content_parse.add_argument('match_phrase', type=inputs.boolean, default=False)
 content_parse.add_argument('doc_status', default=None)
@@ -81,8 +82,8 @@ class SearchContent(Resource):
 
 title_parse = reqparse.RequestParser()
 title_parse.add_argument('title', required=True, default="Bảo hiểm xã hội")
-title_parse.add_argument('from', default=0)
-title_parse.add_argument('size', default=5)
+title_parse.add_argument('from', type=int, default=0)
+title_parse.add_argument('size', type=int, default=5)
 title_parse.add_argument('time_range', default=None, help = 'Example: { "gte" : "1940-01-01", "lte" : "2020-01-01"}')
 title_parse.add_argument('match_phrase', type=inputs.boolean, default=False)
 title_parse.add_argument('doc_status', default=None)
@@ -116,8 +117,8 @@ class SearchTitle(Resource):
 
 code_parse = reqparse.RequestParser()
 code_parse.add_argument('code', required=True, default="190/2007/NĐ-CP")
-code_parse.add_argument('from', default=0)
-code_parse.add_argument('size', default=5)
+code_parse.add_argument('from', type=int, default=0)
+code_parse.add_argument('size', type=int, default=5)
 code_parse.add_argument('time_range', default=None, help = 'Example: { "gte" : "1940-01-01", "lte" : "2020-01-01"}')
 code_parse.add_argument('match_phrase', type=inputs.boolean, default=False)
 code_parse.add_argument('doc_status', default=None)

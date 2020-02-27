@@ -19,6 +19,16 @@ def get_sort_by_date_issued(desc=True):  # Ngày ban hành
             "attribute.issued_date.keyword": {"order": "asc"}
         }
 
+def get_sort_by_enforced_date(desc=True):  # Ngày thi hành
+    if desc:
+        return {
+            "attribute.enforced_date.keyword": {"order": "desc"}
+        }
+    else:
+        return {
+            "attribute.enforced_date.keyword": {"order": "asc"}
+        }
+
 
 def get_sort_by_score(desc=True):
     return {"_score": {"order": "desc"}}

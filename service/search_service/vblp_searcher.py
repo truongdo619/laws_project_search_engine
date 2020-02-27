@@ -5,18 +5,29 @@ from helper.transform_format import dictionary_to_array
 from config.config_es import INDEX_LAW, TYPE_DOCUMENT
 # from apps.search.es_service.es_connection import elasticsearch_connection
 from service.search_service.vblp_query_helper import get_source_default, get_sort_by_date_issued, get_sort_by_score, \
-    get_filter_scope, get_aggregations_of_fields, range_issued_date
+    get_filter_scope, get_aggregations_of_fields, range_issued_date, get_sort_by_enforced_date
 from datetime import date
 
 
-def search_match_all(es, limit=5, start=0):
-
+def search_match_all(es, limit=5, start=0, sort_by=None):
+    sort = get_sort_by_score()
+    if sort_by == 1:
+        sort = get_sort_by_date_issued()
+    elif sort_by == 2:
+        sort = get_sort_by_enforced_date()
     _source = get_source_default()
     query = {
         "query": {
-            "match_all": {}
+            "bool": {
+              "must": [
+                {
+                  "match_all": {}
+                }
+              ]
+            }
         },
         "aggs": get_aggregations_of_fields(),
+        "sort": sort,
         "_source": _source,
         'from': start,
         "size": limit
@@ -25,7 +36,7 @@ def search_match_all(es, limit=5, start=0):
     print(f'querySearchContent: {query}')
     res = es.search(index=INDEX_LAW, doc_type=TYPE_DOCUMENT, body=query)
     print("Got %d Hits:" % res['hits']['total']['value'])
-    print(res)
+    # print(res)
     if res['hits']['total']['value'] == 0:
         return {}
     return res

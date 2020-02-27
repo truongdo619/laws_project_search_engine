@@ -133,7 +133,7 @@ MAPPING = {
       "properties" : {
         "schema" : {
           "properties" : {
-            "instructions_give_document" : {
+            "instructions_give_documents" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -142,7 +142,7 @@ MAPPING = {
                 }
               }
             },
-            "canceled_one_part_document" : {
+            "canceled_one_part_documents" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -151,7 +151,7 @@ MAPPING = {
                 }
               }
             },
-            "suspended_document" : {
+            "suspended_documents" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -160,7 +160,7 @@ MAPPING = {
                 }
               }
             },
-            "extend_document" : {
+            "extend_documents" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -169,7 +169,7 @@ MAPPING = {
                 }
               }
             },
-            "pursuant_document" : {
+            "pursuant_documents" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -178,7 +178,7 @@ MAPPING = {
                 }
               }
             },
-            "reference_document" : {
+            "reference_documents" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -187,7 +187,7 @@ MAPPING = {
                 }
               }
             },
-            "current_document" : {
+            "current_documents" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -196,7 +196,7 @@ MAPPING = {
                 }
               }
             },
-            "canceled_document" : {
+            "canceled_documents" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -205,7 +205,7 @@ MAPPING = {
                 }
               }
             },
-            "other_document_related" : {
+            "other_documents_related" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -214,7 +214,7 @@ MAPPING = {
                 }
               }
             },
-            "cancel_document" : {
+            "cancel_documents" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -223,7 +223,7 @@ MAPPING = {
                 }
               }
             },
-            "cancel_one_part_document" : {
+            "cancel_one_part_documents" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -232,7 +232,7 @@ MAPPING = {
                 }
               }
             },
-            "amend_document" : {
+            "amend_documents" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -241,7 +241,7 @@ MAPPING = {
                 }
               }
             },
-            "suspension_document" : {
+            "suspension_documents" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -250,7 +250,7 @@ MAPPING = {
                 }
               }
             },
-            "suspension_one_part_document" : {
+            "suspension_one_part_documents" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -259,7 +259,7 @@ MAPPING = {
                 }
               }
             },
-            "instructions_document" : {
+            "instructions_documents" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -268,7 +268,7 @@ MAPPING = {
                 }
               }
             },
-            "extended_document" : {
+            "extended_documents" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -277,7 +277,7 @@ MAPPING = {
                 }
               }
             },
-            "amended_document" : {
+            "amended_documents" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -286,7 +286,7 @@ MAPPING = {
                 }
               }
             },
-            "suspended_one_part_document" : {
+            "suspended_one_part_documents" : {
               "type" : "text",
               "fields" : {
                 "keyword" : {
@@ -389,15 +389,6 @@ MAPPING = {
                 }
               }
             },
-            "enforced_date" : {
-              "type" : "date",
-              "fields" : {
-                "keyword" : {
-                  "type" : "keyword",
-                  "ignore_above" : 256
-                }
-              }
-            },
             "expiry_date" : {
               "type" : "date",
               "fields" : {
@@ -464,6 +455,15 @@ MAPPING = {
           }
         },
         "full_text" : {
+          "type" : "text",
+          "fields" : {
+            "keyword" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "html_text" : {
           "type" : "text",
           "fields" : {
             "keyword" : {

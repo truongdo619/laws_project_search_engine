@@ -53,10 +53,10 @@ def get_gz_path(base_path):
 
 def load_vbpl(raw_path):
     files = get_gz_path(raw_path)
-    print(len(files))
-    index_record(files[10000], 200000)
-    # executor = ThreadPoolExecutor(max_workers=50)
-    # for idx, file in enumerate(files):
+    files = files[224490:]
+    executor = ThreadPoolExecutor(max_workers=50)
+    for idx, file in enumerate(files):
+        executor.submit(index_record, file, idx + 224490)
     #     executor.submit(index_record, file, idx)
 
 
